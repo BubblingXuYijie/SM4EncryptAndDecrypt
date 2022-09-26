@@ -10,14 +10,13 @@ import java.util.regex.Pattern;
  * @Author: 徐一杰
  * @date: 2021/12/24
  * @Description: 国密SM4对称加密算法，原作者为中科软wzk，但是版本太旧，本人改进了引入的依赖。此方法需要配合 SM4_Context,SM4,Utils 共同使用
- */
-/**
+ * <p>
  * sm4加密解密
  * CBC、ECB模式
  * 原作者：中科院
  * 修改：徐一杰
  * 2021/12/24
- *
+ * <p>
  * 运    行   方   法
  * <p>
  * 1、CBC模式(此模式更安全)
@@ -39,20 +38,18 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("restriction")
 public class SM4Utils {
+
     /**
      * 当时用ECB模式的时候，和前端key一致
      */
-    private static final String secretKey = "GJwsXX_BzW=gJWJW";
+    private static final String SECRET_KEY = "GJwsXX_BzW=gJWJW";
 
     /**
      * 当时用CBC模式的时候，和前端iv一致
      */
-    private static final String iv = "ZkR_SiNoSOFT=568";
+    private static final String IV = "ZkR_SiNoSOFT=568";
 
-
-    private static final String UTF_8 = "UTF-8";
-
-    private static final boolean hexString = false;
+    private static final boolean HEX_STRING = false;
 
     public SM4Utils() {
 
@@ -60,6 +57,7 @@ public class SM4Utils {
 
     /**
      * ECB模式加密
+     *
      * @param plainText
      * @return
      */
@@ -70,10 +68,10 @@ public class SM4Utils {
             ctx.mode = SM4.SM4_ENCRYPT;
 
             byte[] keyBytes;
-            keyBytes = secretKey.getBytes();
+            keyBytes = SECRET_KEY.getBytes();
             SM4 sm4 = new SM4();
             sm4.sm4_setkey_enc(ctx, keyBytes);
-            byte[] encrypted = sm4.sm4_crypt_ecb(ctx, plainText.getBytes(UTF_8));
+            byte[] encrypted = sm4.sm4_crypt_ecb(ctx, plainText.getBytes(StandardCharsets.UTF_8));
             String cipherText = Base64.encodeBase64String(encrypted);
             if (cipherText != null && cipherText.trim().length() > 0) {
                 Pattern p = Pattern.compile("\\s*|\t|\r|\n");
@@ -89,6 +87,7 @@ public class SM4Utils {
 
     /**
      * ECB模式解密
+     *
      * @param cipherText
      * @return
      */
@@ -99,7 +98,7 @@ public class SM4Utils {
             ctx.mode = SM4.SM4_DECRYPT;
 
             byte[] keyBytes;
-            keyBytes = secretKey.getBytes();
+            keyBytes = SECRET_KEY.getBytes();
             SM4 sm4 = new SM4();
             sm4.sm4_setkey_dec(ctx, keyBytes);
             byte[] decrypted = sm4.sm4_crypt_ecb(ctx, Base64.decodeBase64(cipherText));
@@ -112,6 +111,7 @@ public class SM4Utils {
 
     /**
      * CBC模式加密
+     *
      * @param plainText
      * @return
      */
@@ -124,12 +124,12 @@ public class SM4Utils {
             byte[] keyBytes;
             byte[] ivBytes;
 
-            keyBytes = secretKey.getBytes();
-            ivBytes = iv.getBytes();
+            keyBytes = SECRET_KEY.getBytes();
+            ivBytes = IV.getBytes();
 
             SM4 sm4 = new SM4();
             sm4.sm4_setkey_enc(ctx, keyBytes);
-            byte[] encrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, plainText.getBytes(UTF_8));
+            byte[] encrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, plainText.getBytes(StandardCharsets.UTF_8));
             String cipherText = Base64.encodeBase64String(encrypted);
             if (cipherText != null && cipherText.trim().length() > 0) {
                 Pattern p = Pattern.compile("\\s*|\t|\r|\n");
@@ -145,6 +145,7 @@ public class SM4Utils {
 
     /**
      * CBC模式解密
+     *
      * @param cipherText
      * @return
      */
@@ -156,12 +157,12 @@ public class SM4Utils {
 
             byte[] keyBytes;
             byte[] ivBytes;
-            if (hexString) {
-                keyBytes = Util.hexStringToBytes(secretKey);
-                ivBytes = Util.hexStringToBytes(iv);
+            if (HEX_STRING) {
+                keyBytes = Util.hexStringToBytes(SECRET_KEY);
+                ivBytes = Util.hexStringToBytes(IV);
             } else {
-                keyBytes = secretKey.getBytes();
-                ivBytes = iv.getBytes();
+                keyBytes = SECRET_KEY.getBytes();
+                ivBytes = IV.getBytes();
             }
 
             SM4 sm4 = new SM4();

@@ -8,13 +8,13 @@ package com.xuyijie.sm4encryptanddecrypt.demo;
 public class SM4_Context {
     public int mode;
 
-        public int[] sk;
+    public int[] sk;
 
-        public boolean isPadding;
+    public boolean isPadding;
 
-        public SM4_Context() {
-            this.mode = 1;
-            this.isPadding = true;
-            this.sk = new int[32];
-        }
+    public SM4_Context() {
+        this.mode = 1;
+        this.isPadding = true;
+        this.sk = new int[32];
+    }
 }

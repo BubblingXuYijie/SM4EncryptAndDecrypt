@@ -4,9 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 /**
- * @Author: 徐一杰
+ * @author: 徐一杰
  * @date: 2021/12/24
- * @Description: 国密SM4对称加密算法，原作者为中科软，但是版本太旧，本人改进了引入的依赖。此方法需要配合 SM4_Context,SM4Utils,Utils 共同使用
+ * @description: 国密SM4对称加密算法，原作者为中科软，但是版本太旧，本人改进了引入的依赖。此方法需要配合 SM4_Context,SM4Utils,Utils 共同使用
  */
 public class SM4 {
     public static final int SM4_ENCRYPT = 1;
@@ -34,7 +34,7 @@ public class SM4 {
         return SHL(x, n) | x >> (32 - n);
     }
 
-    public static final byte[] SboxTable = {(byte) 0xd6, (byte) 0x90, (byte) 0xe9, (byte) 0xfe, (byte) 0xcc,
+    public static final byte[] SBOX_TABLE = {(byte) 0xd6, (byte) 0x90, (byte) 0xe9, (byte) 0xfe, (byte) 0xcc,
             (byte) 0xe1, 0x3d, (byte) 0xb7, 0x16, (byte) 0xb6, 0x14, (byte) 0xc2, 0x28, (byte) 0xfb, 0x2c, 0x05, 0x2b,
             0x67, (byte) 0x9a, 0x76, 0x2a, (byte) 0xbe, 0x04, (byte) 0xc3, (byte) 0xaa, 0x44, 0x13, 0x26, 0x49,
             (byte) 0x86, 0x06, (byte) 0x99, (byte) 0x9c, 0x42, 0x50, (byte) 0xf4, (byte) 0x91, (byte) 0xef, (byte) 0x98,
@@ -68,7 +68,7 @@ public class SM4 {
 
     private byte sm4Sbox(byte inch) {
         int i = inch & 0xFF;
-        byte retVal = SboxTable[i];
+        byte retVal = SBOX_TABLE[i];
         return retVal;
     }
 
@@ -107,17 +107,17 @@ public class SM4 {
     }
 
     private void sm4_setkey(int[] SK, byte[] key) {
-        int[] MK = new int[4];
+        int[] mK = new int[4];
         int[] k = new int[36];
         int i = 0;
-        MK[0] = GET_ULONG_BE(key, 0);
-        MK[1] = GET_ULONG_BE(key, 4);
-        MK[2] = GET_ULONG_BE(key, 8);
-        MK[3] = GET_ULONG_BE(key, 12);
-        k[0] = MK[0] ^ (int) FK[0];
-        k[1] = MK[1] ^ (int) FK[1];
-        k[2] = MK[2] ^ (int) FK[2];
-        k[3] = MK[3] ^ (int) FK[3];
+        mK[0] = GET_ULONG_BE(key, 0);
+        mK[1] = GET_ULONG_BE(key, 4);
+        mK[2] = GET_ULONG_BE(key, 8);
+        mK[3] = GET_ULONG_BE(key, 12);
+        k[0] = mK[0] ^ (int) FK[0];
+        k[1] = mK[1] ^ (int) FK[1];
+        k[2] = mK[2] ^ (int) FK[2];
+        k[3] = mK[3] ^ (int) FK[3];
         for (; i < 32; i++) {
             k[(i + 4)] = (k[i] ^ sm4CalciRK(k[(i + 1)] ^ k[(i + 2)] ^ k[(i + 3)] ^ (int) CK[i]));
             SK[i] = k[(i + 4)];
