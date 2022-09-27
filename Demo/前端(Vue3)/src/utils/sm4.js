@@ -13,38 +13,133 @@
  * var sm4 = new SM4Util();
  sm4.encryptData_CBC('');
  */
-(function(r){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=r()}else{
-    let define;
-    if(typeof define===
-        "function"&&define.amd){define([],r)}else{var e;if(typeof window!=="undefined"){e=window}else{if(typeof global
-        !=="undefined"){e=global}else{if(typeof self!=="undefined"){e=self}else{e=this}}}e.base64js=r()}}})(function(){
-    return function r(e, t, n){
-        const f=typeof require=="function"&&require;
+(function (r) {
+    if (typeof exports === "object" && typeof module !== "undefined") {
+        module.exports = r()
+    } else {
+        let define;
+        if (typeof define ===
+            "function" && define.amd) {
+            define([], r)
+        } else {
+            let e;
+            if (typeof window !== "undefined") {
+                e = window
+            } else {
+                if (typeof global
+                    !== "undefined") {
+                    e = global
+                } else {
+                    if (typeof self !== "undefined") {
+                        e = self
+                    } else {
+                        e = this
+                    }
+                }
+            }
+            e.base64js = r()
+        }
+    }
+})(function () {
+    return function r(e, t, n) {
+        const f = typeof require == "function" && require;
 
-        function o(i, a){if(!t[i]){if(!e[i]){
-            const u = typeof require == "function" && require;if(!a&&u){
-                return u(i,!0)}if(f){return f(i,!0)}
-            const d = new Error("Cannot find module '" + i + "'");throw d.code="MODULE_NOT_FOUND",d}
-            const c = t[i] = {exports: {}};e[i][0].call(c.exports,function(r){
-                const t = e[i][1][r];return o(t?t:r)},c,c.exports,r,e,t,n)}return t[i].exports}
-        for(let i=0; i<n.length; i++){o(n[i])}return o}({"/":[function(r, e, t){t.byteLength=c;
-            t.toByteArray=v;t.fromByteArray=s;var n=[];var o=[];var f=typeof Uint8Array!=="undefined"?Uint8Array:Array;
+        function o(i, a) {
+            if (!t[i]) {
+                if (!e[i]) {
+                    const u = typeof require == "function" && require;
+                    if (!a && u) {
+                        return u(i, !0)
+                    }
+                    if (f) {
+                        return f(i, !0)
+                    }
+                    const d = new Error("Cannot find module '" + i + "'");
+                    throw d.code = "MODULE_NOT_FOUND", d
+                }
+                const c = t[i] = {exports: {}};
+                e[i][0].call(c.exports, function (r) {
+                    const t = e[i][1][r];
+                    return o(t ? t : r)
+                }, c, c.exports, r, e, t, n)
+            }
+            return t[i].exports
+        }
+
+        for (let i = 0; i < n.length; i++) {
+            o(n[i])
+        }
+        return o
+    }({
+        "/": [function (r, e, t) {
+            t.byteLength = c;
+            t.toByteArray = v;
+            t.fromByteArray = s;
+            const n = [];
+            const o = [];
+            const f = typeof Uint8Array !== "undefined" ? Uint8Array : Array;
             const i = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
             let a = 0, u = i.length;
-            for(; a<u; ++a){n[a]=i[a];
-                o[i.charCodeAt(a)]=a}o["-".charCodeAt(0)]=62;o["_".charCodeAt(0)]=63;function d(r){
-                const e = r.length;if(e%4>0){
-                    throw new Error("Invalid string. Length must be a multiple of 4")}return r[e-2]==="="?2:r[e-1]==="="?1:0}
-            function c(r){return r.length*3/4-d(r)}function v(r){
+            for (; a < u; ++a) {
+                n[a] = i[a];
+                o[i.charCodeAt(a)] = a
+            }
+            o["-".charCodeAt(0)] = 62;
+            o["_".charCodeAt(0)] = 63;
+
+            function d(r) {
+                const e = r.length;
+                if (e % 4 > 0) {
+                    throw new Error("Invalid string. Length must be a multiple of 4")
+                }
+                return r[e - 2] === "=" ? 2 : r[e - 1] === "=" ? 1 : 0
+            }
+
+            function c(r) {
+                return r.length * 3 / 4 - d(r)
+            }
+
+            function v(r) {
                 let e, t, n, i, a;
-                const u = r.length;i=d(r);a=new f(u*3/4-i);t=i>0?u-4:u;
-                let c = 0;for(e=0; e<t; e+=4){n=o[r.charCodeAt(e)]<<18|o[r.charCodeAt(e+1)]<<12|o[r.charCodeAt(e+2)]<<6|o[r.charCodeAt(e+3)];
-                    a[c++]=n>>16&255;a[c++]=n>>8&255;a[c++]=n&255}if(i===2){n=o[r.charCodeAt(e)]<<2|o[r.charCodeAt(e+1)]>>4;a[c++]=n&255}
-                else{if(i===1){n=o[r.charCodeAt(e)]<<10|o[r.charCodeAt(e+1)]<<4|o[r.charCodeAt(e+2)]>>2;a[c++]=n>>8&255;a[c++]=n&255}}return a}
-            function l(r){return n[r>>18&63]+n[r>>12&63]+n[r>>6&63]+n[r&63]}function h(r,e,t){
+                const u = r.length;
+                i = d(r);
+                a = new f(u * 3 / 4 - i);
+                t = i > 0 ? u - 4 : u;
+                let c = 0;
+                for (e = 0; e < t; e += 4) {
+                    n = o[r.charCodeAt(e)] << 18 | o[r.charCodeAt(e + 1)] << 12 | o[r.charCodeAt(e + 2)] << 6 | o[r.charCodeAt(e + 3)];
+                    a[c++] = n >> 16 & 255;
+                    a[c++] = n >> 8 & 255;
+                    a[c++] = n & 255
+                }
+                if (i === 2) {
+                    n = o[r.charCodeAt(e)] << 2 | o[r.charCodeAt(e + 1)] >> 4;
+                    a[c++] = n & 255
+                } else {
+                    if (i === 1) {
+                        n = o[r.charCodeAt(e)] << 10 | o[r.charCodeAt(e + 1)] << 4 | o[r.charCodeAt(e + 2)] >> 2;
+                        a[c++] = n >> 8 & 255;
+                        a[c++] = n & 255
+                    }
+                }
+                return a
+            }
+
+            function l(r) {
+                return n[r >> 18 & 63] + n[r >> 12 & 63] + n[r >> 6 & 63] + n[r & 63]
+            }
+
+            function h(r, e, t) {
                 let n;
-                const o = [];for(let f=e; f<t; f+=3){
-                    n=(r[f]<<16)+(r[f+1]<<8)+r[f+2];o.push(l(n))}return o.join("")}function s(r){
+                const o = [];
+                for (let f = e; f < t; f += 3) {
+                    n = (r[f] << 16) + (r[f + 1] << 8) + r[f + 2];
+                    o.push(l(n))
+                }
+                return o.join("")
+            }
+
+            function s(r) {
                 let e;
                 const t = r.length;
                 const o = t % 3;
@@ -52,8 +147,29 @@
                 const i = [];
                 const a = 16383;
                 let u = 0, d = t - o;
-                for(; u<d; u+=a){i.push(h(r,u,u+a>d?d:u+a))}if(o===1){e=r[t-1];f+=n[e>>2];f+=n[e<<4&63];f+="=="}else{if(o===2){
-                    e=(r[t-2]<<8)+r[t-1];f+=n[e>>10];f+=n[e>>4&63];f+=n[e<<2&63];f+="="}}i.push(f);return i.join("")}},{}]},{},[])("/")});
+                for (; u < d; u += a) {
+                    i.push(h(r, u, u + a > d ? d : u + a))
+                }
+                if (o === 1) {
+                    e = r[t - 1];
+                    f += n[e >> 2];
+                    f += n[e << 4 & 63];
+                    f += "=="
+                } else {
+                    if (o === 2) {
+                        e = (r[t - 2] << 8) + r[t - 1];
+                        f += n[e >> 10];
+                        f += n[e >> 4 & 63];
+                        f += n[e << 2 & 63];
+                        f += "="
+                    }
+                }
+                i.push(f);
+                return i.join("")
+            }
+        }, {}]
+    }, {}, [])("/")
+});
 
 
 /**
@@ -63,13 +179,13 @@
  * @company 中科软
  */
 function SM4_Context() {
-    this.mode=1;
+    this.mode = 1;
     this.isPadding = true;
     this.sk = new Array(32);
 }
 
 function SM4() {
-    this.SM4_ENCRYPT=1;
+    this.SM4_ENCRYPT = 1;
     this.SM4_DECRYPT = 0;
 
     const SboxTable = [0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7, 0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
@@ -100,33 +216,33 @@ function SM4() {
         0xa0a7aeb5, 0xbcc3cad1, 0xd8dfe6ed, 0xf4fb0209,
         0x10171e25, 0x2c333a41, 0x484f565d, 0x646b7279];
 
-    this.GET_ULONG_BE = function(b,i) {
+    this.GET_ULONG_BE = function (b, i) {
         return (b[i] & 0xff) << 24 | ((b[i + 1] & 0xff) << 16) | ((b[i + 2] & 0xff) << 8) | (b[i + 3] & 0xff) & 0xffffffff;
     }
 
-    this.PUT_ULONG_BE=function( n, b, i){
-        var t1=(0xFF & (n >> 24));
-        var t2=(0xFF & (n >> 16));
-        var t3=(0xFF & (n >> 8));
-        var t4=(0xFF & (n));
-        b[i] = t1>128?t1-256:t1;
-        b[i + 1] = t2>128?t2-256:t2;
-        b[i + 2] = t3>128?t3-256:t3;
-        b[i + 3] = t4>128?t4-256:t4;
+    this.PUT_ULONG_BE = function (n, b, i) {
+        var t1 = (0xFF & (n >> 24));
+        var t2 = (0xFF & (n >> 16));
+        var t3 = (0xFF & (n >> 8));
+        var t4 = (0xFF & (n));
+        b[i] = t1 > 128 ? t1 - 256 : t1;
+        b[i + 1] = t2 > 128 ? t2 - 256 : t2;
+        b[i + 2] = t3 > 128 ? t3 - 256 : t3;
+        b[i + 3] = t4 > 128 ? t4 - 256 : t4;
     }
 
-    this.SHL=function(x,n){
+    this.SHL = function (x, n) {
         return (x & 0xFFFFFFFF) << n;
     }
 
-    this.ROTL=function( x,  n){
+    this.ROTL = function (x, n) {
         // const s = this.SHL(x, n);
         // const ss = x >> (32 - n);
         return this.SHL(x, n) | x >> (32 - n);
     }
 
 
-    this.sm4Lt=function(ka){
+    this.sm4Lt = function (ka) {
         let bb = 0;
         let c = 0;
         const a = new Array(4);
@@ -141,11 +257,11 @@ function SM4() {
         return c;
     }
 
-    this.sm4F=function( x0,  x1,  x2,  x3,  rk){
+    this.sm4F = function (x0, x1, x2, x3, rk) {
         return x0 ^ this.sm4Lt(x1 ^ x2 ^ x3 ^ rk);
     }
 
-    this.sm4CalciRK=function(ka){
+    this.sm4CalciRK = function (ka) {
         let bb = 0;
         let rk = 0;
         const a = new Array(4);
@@ -161,19 +277,18 @@ function SM4() {
     }
 
 
-
-    this.sm4Sbox=function(inch){
+    this.sm4Sbox = function (inch) {
         const i = inch & 0xFF;
         const retVal = SboxTable[i];
-        return  retVal > 128 ? retVal - 256 : retVal;
+        return retVal > 128 ? retVal - 256 : retVal;
     }
 
-    this.sm4_setkey_enc = function(ctx, key){
+    this.sm4_setkey_enc = function (ctx, key) {
         if (ctx == null) {
             alert("ctx is null!");
             return false;
         }
-        if (key == null || key.length !== 16){
+        if (key == null || key.length !== 16) {
             alert("key error!");
             return false;
         }
@@ -183,7 +298,7 @@ function SM4() {
     };
 
     //生成解密密钥
-    this.sm4_setkey_dec = function(ctx, key) {
+    this.sm4_setkey_dec = function (ctx, key) {
         if (ctx == null) {
             Error("ctx is null!");
         }
@@ -198,7 +313,7 @@ function SM4() {
         ctx.sk = ctx.sk.reverse();
     }
 
-    this.sm4_setkey = function(SK, key){
+    this.sm4_setkey = function (SK, key) {
         const MK = new Array(4);
         const k = new Array(36);
         // var i = 0;
@@ -206,42 +321,42 @@ function SM4() {
         MK[1] = this.GET_ULONG_BE(key, 4);
         MK[2] = this.GET_ULONG_BE(key, 8);
         MK[3] = this.GET_ULONG_BE(key, 12);
-        k[0] = MK[0] ^  FK[0];
-        k[1] = MK[1] ^  FK[1];
-        k[2] = MK[2] ^  FK[2];
-        k[3] = MK[3] ^  FK[3];
-        for (let i=0; i < 32; i++){
+        k[0] = MK[0] ^ FK[0];
+        k[1] = MK[1] ^ FK[1];
+        k[2] = MK[2] ^ FK[2];
+        k[3] = MK[3] ^ FK[3];
+        for (let i = 0; i < 32; i++) {
             k[(i + 4)] = (k[i] ^ this.sm4CalciRK(k[(i + 1)] ^ k[(i + 2)] ^ k[(i + 3)] ^ CK[i]));
             SK[i] = k[(i + 4)];
         }
 
     }
-    this.padding=function(input,mode){
+    this.padding = function (input, mode) {
         let p;
-        if (input == null){
+        if (input == null) {
             return null;
         }
         let ret = null;
-        if (mode === this.SM4_ENCRYPT){
+        if (mode === this.SM4_ENCRYPT) {
             p = parseInt(16 - input.length % 16);
             ret = input.slice(0);
-            for (let i = 0; i < p; i++){
+            for (let i = 0; i < p; i++) {
                 ret[input.length + i] = p;
             }
-        }else{
+        } else {
             p = input[input.length - 1];
-            ret=input.slice(0,input.length - p);
+            ret = input.slice(0, input.length - p);
         }
         return ret;
     }
-    this.sm4_one_round=function(sk, input, output){
+    this.sm4_one_round = function (sk, input, output) {
         let i = 0;
         const ulbuf = new Array(36);
         ulbuf[0] = this.GET_ULONG_BE(input, 0);
         ulbuf[1] = this.GET_ULONG_BE(input, 4);
         ulbuf[2] = this.GET_ULONG_BE(input, 8);
         ulbuf[3] = this.GET_ULONG_BE(input, 12);
-        while (i < 32){
+        while (i < 32) {
             ulbuf[(i + 4)] = this.sm4F(ulbuf[i], ulbuf[(i + 1)], ulbuf[(i + 2)], ulbuf[(i + 3)], sk[i]);
             i++;
         }
@@ -253,41 +368,38 @@ function SM4() {
     }
 
 
-
-    this.sm4_crypt_ecb=function(ctx,input){
-        if (input == null){
+    this.sm4_crypt_ecb = function (ctx, input) {
+        if (input == null) {
             alert("input is null!");
         }
-        if ((ctx.isPadding) && (ctx.mode == this.SM4_ENCRYPT)){
+        if ((ctx.isPadding) && (ctx.mode === this.SM4_ENCRYPT)) {
             input = this.padding(input, this.SM4_ENCRYPT);
         }
 
         let i = 0;
         let length = input.length;
         let bous = [];
-        for(; length > 0; length -= 16)
-        {
+        for (; length > 0; length -= 16) {
             var out = new Array(16);
-            var ins=input.slice(i*16,(16*(i+1)));
+            var ins = input.slice(i * 16, (16 * (i + 1)));
             this.sm4_one_round(ctx.sk, ins, out)
-            bous=bous.concat(out);
+            bous = bous.concat(out);
             i++;
         }
 
         let output = bous;
-        if (ctx.isPadding && ctx.mode === this.SM4_DECRYPT)
-        {
+        if (ctx.isPadding && ctx.mode === this.SM4_DECRYPT) {
             output = this.padding(output, this.SM4_DECRYPT);
         }
-        for(i = 0; i<output.length; i++){
-            if(output[i]<0){
-                output[i]=output[i]+256;
+        for (i = 0; i < output.length; i++) {
+            if (output[i] < 0) {
+                output[i] = output[i] + 256;
             }
         }
         return output;
     }
 
-    this.sm4_crypt_cbc=function(ctx, iv, input){
+    this.sm4_crypt_cbc = function (ctx, iv, input) {
         let out;
         let ins;
         let out1;
@@ -296,7 +408,7 @@ function SM4() {
             alert("iv error!");
         }
 
-        if (input == null){
+        if (input == null) {
             alert("input is null!");
         }
 
@@ -307,53 +419,47 @@ function SM4() {
         let i = 0;
         let length = input.length;
         let bous = [];
-        if (ctx.mode === this.SM4_ENCRYPT){
+        if (ctx.mode === this.SM4_ENCRYPT) {
             k = 0;
-            for(; length > 0; length -= 16){
+            for (; length > 0; length -= 16) {
                 out = new Array(16);
                 out1 = new Array(16);
                 ins = input.slice(k * 16, (16 * (k + 1)));
 
-                for (i = 0; i < 16; i++)
-                {
+                for (i = 0; i < 16; i++) {
                     out[i] = (ins[i] ^ iv[i]);
                 }
                 this.sm4_one_round(ctx.sk, out, out1);
-                iv=out1.slice(0,16);
-                bous=bous.concat(out1);
+                iv = out1.slice(0, 16);
+                bous = bous.concat(out1);
                 k++;
             }
-        }
-        else
-        {
+        } else {
             let temp = [];
             k = 0;
-            for(; length > 0; length -= 16)
-            {
+            for (; length > 0; length -= 16) {
                 out = new Array(16);
                 out1 = new Array(16);
-                ins = input.slice(k*16,(16*(k+1)));
-                temp=ins.slice(0,16);
+                ins = input.slice(k * 16, (16 * (k + 1)));
+                temp = ins.slice(0, 16);
                 this.sm4_one_round(ctx.sk, ins, out);
-                for (i = 0; i < 16; i++)
-                {
+                for (i = 0; i < 16; i++) {
                     out1[i] = (out[i] ^ iv[i]);
                 }
-                iv=temp.slice(0,16);
-                bous=bous.concat(out1);
+                iv = temp.slice(0, 16);
+                bous = bous.concat(out1);
                 k++;
             }
         }
 
         let output = bous;
-        if (ctx.isPadding && ctx.mode === this.SM4_DECRYPT)
-        {
+        if (ctx.isPadding && ctx.mode === this.SM4_DECRYPT) {
             output = this.padding(output, this.SM4_DECRYPT);
         }
 
-        for(i = 0; i<output.length; i++){
-            if(output[i]<0){
-                output[i]=output[i]+256;
+        for (i = 0; i < output.length; i++) {
+            if (output[i] < 0) {
+                output[i] = output[i] + 256;
             }
         }
         return output;
@@ -363,14 +469,14 @@ function SM4() {
 
 export function SM4Util() {
     // 和后端key一致
-    this.secretKey="GJwsXX_BzW=gJWJW";
+    this.secretKey = "GJwsXX_BzW=gJWJW";
     // 当时用CBC模式的时候
     this.iv = "ZkR_SiNoSOFT=568";
     this.hexString = false;
 
     // ECB模式加密
-    this.encryptData_ECB=function(plainText){
-        try{
+    this.encryptData_ECB = function (plainText) {
+        try {
             const sm4 = new SM4();
             const ctx = new SM4_Context();
             ctx.isPadding = true;
@@ -379,18 +485,17 @@ export function SM4Util() {
             sm4.sm4_setkey_enc(ctx, keyBytes);
             const encrypted = sm4.sm4_crypt_ecb(ctx, this.stringToByte(plainText));
             const cipherText = base64js.fromByteArray(encrypted);
-            if (cipherText != null && cipherText.trim().length > 0)
-            {
+            if (cipherText != null && cipherText.trim().length > 0) {
                 cipherText.replace(/(\s*|\t|\r|\n)/g, "");
             }
             return cipherText;
-        }catch (e){
+        } catch (e) {
             console.error(e);
             return null;
         }
     }
     //解密_ECB
-    this.decryptData_ECB = function(cipherText) {
+    this.decryptData_ECB = function (cipherText) {
         try {
             let sm4 = new SM4();
             let ctx = new SM4_Context();
@@ -407,8 +512,8 @@ export function SM4Util() {
     }
 
     // CBC模式加密
-    this.encryptData_CBC=function(plainText){
-        try{
+    this.encryptData_CBC = function (plainText) {
+        try {
             const sm4 = new SM4();
             const ctx = new SM4_Context();
             ctx.isPadding = true;
@@ -420,20 +525,17 @@ export function SM4Util() {
             sm4.sm4_setkey_enc(ctx, keyBytes);
             const encrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, this.stringToByte(plainText));
             const cipherText = base64js.fromByteArray(encrypted);
-            if (cipherText != null && cipherText.trim().length > 0)
-            {
+            if (cipherText != null && cipherText.trim().length > 0) {
                 cipherText.replace(/(\s*|\t|\r|\n)/g, "");
             }
             return cipherText;
-        }
-        catch ( e)
-        {
+        } catch (e) {
             console.error(e);
             return null;
         }
     }
     //解密_CBC
-    this.decryptData_CBC = function(cipherText) {
+    this.decryptData_CBC = function (cipherText) {
         try {
             let sm4 = new SM4();
             let ctx = new SM4_Context();
@@ -450,22 +552,22 @@ export function SM4Util() {
         }
     }
 
-    this.stringToByte=function(str) {
+    this.stringToByte = function (str) {
         const bytes = [];
         let len, c;
         len = str.length;
-        for(let i = 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             c = str.charCodeAt(i);
-            if(c >= 0x010000 && c <= 0x10FFFF) {
+            if (c >= 0x010000 && c <= 0x10FFFF) {
                 bytes.push(((c >> 18) & 0x07) | 0xF0);
                 bytes.push(((c >> 12) & 0x3F) | 0x80);
                 bytes.push(((c >> 6) & 0x3F) | 0x80);
                 bytes.push((c & 0x3F) | 0x80);
-            } else if(c >= 0x000800 && c <= 0x00FFFF) {
+            } else if (c >= 0x000800 && c <= 0x00FFFF) {
                 bytes.push(((c >> 12) & 0x0F) | 0xE0);
                 bytes.push(((c >> 6) & 0x3F) | 0x80);
                 bytes.push((c & 0x3F) | 0x80);
-            } else if(c >= 0x000080 && c <= 0x0007FF) {
+            } else if (c >= 0x000080 && c <= 0x0007FF) {
                 bytes.push(((c >> 6) & 0x1F) | 0xC0);
                 bytes.push((c & 0x3F) | 0x80);
             } else {
@@ -476,19 +578,19 @@ export function SM4Util() {
     }
 
 
-    this.byteToString=function(arr) {
-        if(typeof arr === 'string') {
+    this.byteToString = function (arr) {
+        if (typeof arr === 'string') {
             return arr;
         }
         let str = '',
             _arr = arr;
-        for(let i = 0; i < _arr.length; i++) {
+        for (let i = 0; i < _arr.length; i++) {
             const one = _arr[i].toString(2),
                 v = one.match(/^1+?(?=0)/);
-            if(v && one.length === 8) {
+            if (v && one.length === 8) {
                 const bytesLength = v[0].length;
                 let store = _arr[i].toString(2).slice(7 - bytesLength);
-                for(let st = 1; st < bytesLength; st++) {
+                for (let st = 1; st < bytesLength; st++) {
                     store += _arr[st + i].toString(2).slice(2);
                 }
                 str += String.fromCharCode(parseInt(store, 2));
