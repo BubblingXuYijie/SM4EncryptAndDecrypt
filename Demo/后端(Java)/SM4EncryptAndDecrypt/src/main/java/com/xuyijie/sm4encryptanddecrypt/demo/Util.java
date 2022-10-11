@@ -4,10 +4,9 @@ import java.math.BigInteger;
 
 /**
  * @author: 徐一杰
- * @date: 2021/12/24
- * @description: 国密SM4对称加密算法，原作者为中科软wzk，但是版本太旧，本人改进了引入的依赖。此方法需要配合 SM4_Context,SM4,SM4Utils 共同使用
+ * @date: 2022/10/11
  */
-public class Util {
+class Util {
 
     /**
      * 整形转换成网络传输的字节流（字节数组）型数据
@@ -65,7 +64,7 @@ public class Util {
      * @return
      */
     public static byte[] byteConvert32Bytes(BigInteger n) {
-        byte[] tmp = (byte[]) null;
+        byte[] tmp;
         if (n == null) {
             return null;
         }
@@ -139,7 +138,6 @@ public class Util {
             }
             System.out.print("0x" + hex.toUpperCase() + ",");
         }
-        System.out.println("");
     }
 
     /**
@@ -319,13 +317,13 @@ public class Util {
      * @return 字符串
      */
     public static String hexStringToString(String hexString, int encodeType) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         int max = hexString.length() / encodeType;
         for (int i = 0; i < max; i++) {
             char c = (char) hexStringToAlgorism(hexString.substring(i * encodeType, (i + 1) * encodeType));
-            result += c;
+            result.append(c);
         }
-        return result;
+        return result.toString();
     }
 
     /**
@@ -340,7 +338,7 @@ public class Util {
         int result = 0;
         for (int i = max; i > 0; i--) {
             char c = hex.charAt(i - 1);
-            int algorism = 0;
+            int algorism;
             if (c >= '0' && c <= '9') {
                 algorism = c - '0';
             } else {
@@ -364,27 +362,58 @@ public class Util {
         for (int i = 0; i < max; i++) {
             char c = hex.charAt(i);
             switch (c) {
-                case '0' -> result.append("0000");
-                case '1' -> result.append("0001");
-                case '2' -> result.append("0010");
-                case '3' -> result.append("0011");
-                case '4' -> result.append("0100");
-                case '5' -> result.append("0101");
-                case '6' -> result.append("0110");
-                case '7' -> result.append("0111");
-                case '8' -> result.append("1000");
-                case '9' -> result.append("1001");
-                case 'A' -> result.append("1010");
-                case 'B' -> result.append("1011");
-                case 'C' -> result.append("1100");
-                case 'D' -> result.append("1101");
-                case 'E' -> result.append("1110");
-                case 'F' -> result.append("1111");
-                default -> {
+                case '0':
+                    result.append("0000");
+                    break;
+                case '1':
+                    result.append("0001");
+                    break;
+                case '2':
+                    result.append("0010");
+                    break;
+                case '3':
+                    result.append("0011");
+                    break;
+                case '4':
+                    result.append("0100");
+                    break;
+                case '5':
+                    result.append("0101");
+                    break;
+                case '6':
+                    result.append("0110");
+                    break;
+                case '7':
+                    result.append("0111");
+                    break;
+                case '8':
+                    result.append("1000");
+                    break;
+                case '9':
+                    result.append("1001");
+                    break;
+                case 'A':
+                    result.append("1010");
+                    break;
+                case 'B':
+                    result.append("1011");
+                    break;
+                case 'C':
+                    result.append("1100");
+                    break;
+                case 'D':
+                    result.append("1101");
+                    break;
+                case 'E':
+                    result.append("1110");
+                    break;
+                case 'F':
+                    result.append("1111");
+                    break;
+                default:
                     System.out.println("hexStringToBinary无匹配项");
-                }
+                    break;
             }
-
         }
         return result.toString();
     }
@@ -392,7 +421,7 @@ public class Util {
     /**
      * ASCII码字符串转数字字符串
      *
-     * @param String ASCII字符串
+     * @param content ASCII字符串
      * @return 字符串
      */
     public static String AsciiStringToString(String content) {
@@ -416,7 +445,7 @@ public class Util {
      * @return String 转换后的十六进制字符串
      */
     public static String algorismToHexString(int algorism, int maxLength) {
-        String result = "";
+        String result;
         result = Integer.toHexString(algorism);
 
         if (result.length() % 2 == 1) {
@@ -467,7 +496,7 @@ public class Util {
      * @return String 对应的十六进制字符串
      */
     public static String algorismToHEXString(int algorism) {
-        String result = "";
+        String result;
         result = Integer.toHexString(algorism);
 
         if (result.length() % 2 == 1) {
@@ -504,7 +533,7 @@ public class Util {
      * @return int 转换后的数字
      */
     public static int parseToInt(String s, int defaultInt, int radix) {
-        int i = 0;
+        int i;
         try {
             i = Integer.parseInt(s, radix);
         } catch (NumberFormatException ex) {
@@ -521,7 +550,7 @@ public class Util {
      * @return int 转换后的数字
      */
     public static int parseToInt(String s, int defaultInt) {
-        int i = 0;
+        int i;
         try {
             i = Integer.parseInt(s);
         } catch (NumberFormatException ex) {
@@ -543,8 +572,8 @@ public class Util {
         byte[] b = new byte[hex.length() / 2];
         for (int i = 0, j = 0, l = hex.length(); i < l; i++, j++) {
             String swap = "" + arr[i++] + arr[i];
-            int byteint = Integer.parseInt(swap, 16) & 0xFF;
-            b[j] = new Integer(byteint).byteValue();
+            int byteInt = Integer.parseInt(swap, 16) & 0xFF;
+            b[j] = Integer.valueOf(byteInt).byteValue();
         }
         return b;
     }
@@ -560,7 +589,7 @@ public class Util {
             throw new IllegalArgumentException("Argument b ( byte array ) is null! ");
         }
         StringBuilder hs = new StringBuilder();
-        String stmp = "";
+        String stmp;
         for (byte value : b) {
             stmp = Integer.toHexString(value & 0xff);
             if (stmp.length() == 1) {

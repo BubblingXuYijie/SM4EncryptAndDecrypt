@@ -7,45 +7,37 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @Author: 徐一杰
- * @date: 2021/12/24
- * @Description: 国密SM4对称加密算法，原作者为中科软wzk，但是版本太旧，本人改进了引入的依赖。此方法需要配合 SM4_Context,SM4,Utils 共同使用
+ * @author: 徐一杰
+ * @date: 2022/10/11
  * <p>
- * sm4加密解密
- * CBC、ECB模式
- * 原作者：中科院
- * 修改：徐一杰
- * 2021/12/24
+ * ECB 加密模式
+ * 不使用自定义 secretKey，一般用于后端自行加解密,如果是前端加密后端解密，则需要自定义secretKey，前后端一致才能正确解密
+ * 经过ECB加密的密文为：SM4Utils.encryptData_ECB("123456");
+ * 经过ECB解密的密文为：SM4Utils.decryptData_ECB("UQZqWWcVSu7MIrMzWRD/wA==");
+ * 使用自定义 secretKey，传入的 secretKey 必须为16位，可包含字母、数字、标点
+ * 经过ECB加密的密文为：SM4Utils.encryptData_ECB("123456");
+ * 经过ECB解密的密文为：SM4Utils.decryptData_ECB("UQZqWWcVSu7MIrMzWRD/wA==");
  * <p>
- * 运    行   方   法
- * <p>
- * 1、CBC模式(此模式更安全)
- * 前端：有对应js文件
- * var sm4=new SM4Util();
- * sm4.encryptData_CBC('');
- * <p>
- * 后端：
- * SM4Utils.decryptData_CBC("");
- * <p>
- * 2、ECB模式
- * 前端：有对应js文件
- * var sm4=new SM4Util();
- * sm4.encryptData_ECB('');
- * <p>
- * 后端：
- * SM4Utils.decryptData_ECB("");
+ * CBC 加密模式（更加安全），需要两个密钥
+ * 经过CBC加密的密文为：SM4Utils.encryptData_CBC("123456");
+ * 经过CBC解密的密文为：SM4Utils.decryptData_CBC("hbMK6/IeJ3UTzaTgLb3f3A==");
+ * 同样可以自定义 secretKey 和 iv，需要两个密钥前后端都一致
+ * 经过CBC加密的密文为：SM4Utils.encryptData_CBC("123456","asdfghjklzxcvb!_","1234567890123456");
+ * 经过CBC解密的密文为：SM4Utils.decryptData_CBC("sTyCl3G6TF311kIENzsKNg==","asdfghjklzxcvb!_","1234567890123456");
  */
-
-@SuppressWarnings("restriction")
 public class SM4Utils {
 
     /**
+     * 默认 SECRET_KEY
      * 当时用ECB模式的时候，和前端key一致
+     * secretKey 必须为16位，可包含字母、数字、标点
      */
     private static final String SECRET_KEY = "GJwsXX_BzW=gJWJW";
 
     /**
-     * 当时用CBC模式的时候，SECRET_KEY和IV都需要传值，前后端的 SECRET_KEY和IV 都需要一致
+     * 默认 IV
+     * 当时用CBC模式的时候，SECRET_KEY和IV都需要传值，解密要和加密的SECRET_KEY和IV一致，更加安全
+     * iv 必须为 16 位，可包含字母、数字、标点
      */
     private static final String IV = "ZkR_SiNoSOFT=568";
 
@@ -56,10 +48,15 @@ public class SM4Utils {
     }
 
     /**
-     * ECB模式加密
+     * 不要在方法里定义正则表达式规则,应定义为常量或字段,能加快正则匹配速度
+     */
+    private static final Pattern P = Pattern.compile("\\s*|\t|\r|\n");
+
+    /**
+     * ECB模式加密，自定义密钥，加解密密钥需一致
      *
-     * @param plainText
-     * @param secretKey
+     * @param plainText 要加密的数据
+     * @param secretKey 密钥，必须为 16 位，可包含字母、数字、标点
      * @return
      */
     public static String encryptData_ECB(String plainText, String secretKey) {
@@ -75,8 +72,7 @@ public class SM4Utils {
             byte[] encrypted = sm4.sm4_crypt_ecb(ctx, plainText.getBytes(StandardCharsets.UTF_8));
             String cipherText = Base64.encodeBase64String(encrypted);
             if (cipherText != null && cipherText.trim().length() > 0) {
-                Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-                Matcher m = p.matcher(cipherText);
+                Matcher m = P.matcher(cipherText);
                 cipherText = m.replaceAll("");
             }
             return cipherText;
@@ -87,9 +83,9 @@ public class SM4Utils {
     }
 
     /**
-     * ECB模式加密
+     * ECB模式加密，默认密钥
      *
-     * @param plainText
+     * @param plainText 要加密的数据
      * @return
      */
     public static String encryptData_ECB(String plainText) {
@@ -105,8 +101,7 @@ public class SM4Utils {
             byte[] encrypted = sm4.sm4_crypt_ecb(ctx, plainText.getBytes(StandardCharsets.UTF_8));
             String cipherText = Base64.encodeBase64String(encrypted);
             if (cipherText != null && cipherText.trim().length() > 0) {
-                Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-                Matcher m = p.matcher(cipherText);
+                Matcher m = P.matcher(cipherText);
                 cipherText = m.replaceAll("");
             }
             return cipherText;
@@ -117,10 +112,10 @@ public class SM4Utils {
     }
 
     /**
-     * ECB模式解密
+     * ECB模式解密，自定义密钥，加解密密钥需一致
      *
-     * @param cipherText
-     * @param secretKey
+     * @param cipherText 要解密的数据
+     * @param secretKey 密钥，必须为 16 位，可包含字母、数字、标点
      * @return
      */
     public static String decryptData_ECB(String cipherText, String secretKey) {
@@ -142,9 +137,9 @@ public class SM4Utils {
     }
 
     /**
-     * ECB模式解密
+     * ECB模式解密，默认密钥
      *
-     * @param cipherText
+     * @param cipherText 要解密的数据
      * @return
      */
     public static String decryptData_ECB(String cipherText) {
@@ -166,11 +161,11 @@ public class SM4Utils {
     }
 
     /**
-     * CBC模式加密
+     * CBC模式加密，SECRET_KEY和IV都需要传值，解密要和加密的SECRET_KEY和IV一致，更加安全
      *
-     * @param plainText
-     * @param secretKey
-     * @param iv
+     * @param plainText 要加密的数据
+     * @param secretKey 密钥一，必须为 16 位，可包含字母、数字、标点
+     * @param iv 密钥二，必须为 16 位，可包含字母、数字、标点
      * @return
      */
     public static String encryptData_CBC(String plainText, String secretKey, String iv) {
@@ -190,8 +185,7 @@ public class SM4Utils {
             byte[] encrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, plainText.getBytes(StandardCharsets.UTF_8));
             String cipherText = Base64.encodeBase64String(encrypted);
             if (cipherText != null && cipherText.trim().length() > 0) {
-                Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-                Matcher m = p.matcher(cipherText);
+                Matcher m = P.matcher(cipherText);
                 cipherText = m.replaceAll("");
             }
             return cipherText;
@@ -202,7 +196,7 @@ public class SM4Utils {
     }
 
     /**
-     * CBC模式加密
+     * CBC模式加密，SECRET_KEY和IV都需要传值，解密要和加密的SECRET_KEY和IV一致，更加安全
      *
      * @param plainText
      * @return
@@ -224,8 +218,7 @@ public class SM4Utils {
             byte[] encrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, plainText.getBytes(StandardCharsets.UTF_8));
             String cipherText = Base64.encodeBase64String(encrypted);
             if (cipherText != null && cipherText.trim().length() > 0) {
-                Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-                Matcher m = p.matcher(cipherText);
+                Matcher m = P.matcher(cipherText);
                 cipherText = m.replaceAll("");
             }
             return cipherText;
@@ -236,11 +229,11 @@ public class SM4Utils {
     }
 
     /**
-     * CBC模式解密
+     * CBC模式解密，SECRET_KEY和IV都需要传值，解密要和加密的SECRET_KEY和IV一致，更加安全
      *
-     * @param cipherText
-     * @param secretKey
-     * @param iv
+     * @param cipherText 要解密的数据
+     * @param secretKey 密钥一，必须为 16 位，可包含字母、数字、标点
+     * @param iv 密钥二，必须为 16 位，可包含字母、数字、标点
      * @return
      */
     public static String decryptData_CBC(String cipherText, String secretKey, String iv) {
@@ -270,8 +263,9 @@ public class SM4Utils {
     }
 
     /**
-     * CBC模式解密
-     * @param cipherText
+     * CBC模式解密，SECRET_KEY和IV都需要传值，解密要和加密的SECRET_KEY和IV一致，更加安全
+     *
+     * @param cipherText 要解密的数据
      * @return
      */
     public static String decryptData_CBC(String cipherText) {
@@ -303,7 +297,7 @@ public class SM4Utils {
     public static void main(String[] args) {
         System.out.println("经过ECB加密的密文为：" + SM4Utils.encryptData_ECB("123456"));
         System.out.println("经过ECB解密的密文为：" + SM4Utils.decryptData_ECB("UQZqWWcVSu7MIrMzWRD/wA=="));
-        System.out.println("经过CBC加密的密文为：" + SM4Utils.encryptData_CBC("123456", "asdfghjklzxcvb!_", "1234567890123456"));
-        System.out.println("经过CBC解密的密文为：" + SM4Utils.decryptData_CBC("sTyCl3G6TF311kIENzsKNg==", "asdfghjklzxcvb!_", "1234567890123456"));
+        System.out.println("经过CBC加密的密文为：" + SM4Utils.encryptData_CBC("123456", "asdfghjklzxcvbnm", "1234567890123456"));
+        System.out.println("经过CBC解密的密文为：" + SM4Utils.decryptData_CBC("RZUhE8Zeobfkn/sqnPXA+g==", "asdfghjklzxcvbnm", "1234567890123456"));
     }
 }

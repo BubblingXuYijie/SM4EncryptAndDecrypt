@@ -5,25 +5,23 @@ import java.io.ByteArrayOutputStream;
 
 /**
  * @author: 徐一杰
- * @date: 2021/12/24
- * @description: 国密SM4对称加密算法，原作者为中科软，但是版本太旧，本人改进了引入的依赖。此方法需要配合 SM4_Context,SM4Utils,Utils 共同使用
+ * @date: 2022/10/11
  */
-public class SM4 {
+class SM4 {
     public static final int SM4_ENCRYPT = 1;
 
     public static final int SM4_DECRYPT = 0;
 
     private int GET_ULONG_BE(byte[] b, int i) {
-        int n = (int) (b[i] & 0xff) << 24 | (int) ((b[i + 1] & 0xff) << 16) | (int) ((b[i + 2] & 0xff) << 8)
-                | (int) (b[i + 3] & 0xff) & 0xffffffff;
-        return n;
+        return (b[i] & 0xff) << 24 | ((b[i + 1] & 0xff) << 16) | ((b[i + 2] & 0xff) << 8)
+                | b[i + 3] & 0xff & 0xffffffff;
     }
 
     private void PUT_ULONG_BE(int n, byte[] b, int i) {
-        b[i] = (byte) (int) (0xFF & n >> 24);
-        b[i + 1] = (byte) (int) (0xFF & n >> 16);
-        b[i + 2] = (byte) (int) (0xFF & n >> 8);
-        b[i + 3] = (byte) (int) (0xFF & n);
+        b[i] = (byte) (0xFF & n >> 24);
+        b[i + 1] = (byte) (0xFF & n >> 16);
+        b[i + 2] = (byte) (0xFF & n >> 8);
+        b[i + 3] = (byte) (0xFF & n);
     }
 
     private int SHL(int x, int n) {
@@ -114,10 +112,10 @@ public class SM4 {
         mK[1] = GET_ULONG_BE(key, 4);
         mK[2] = GET_ULONG_BE(key, 8);
         mK[3] = GET_ULONG_BE(key, 12);
-        k[0] = mK[0] ^ (int) FK[0];
-        k[1] = mK[1] ^ (int) FK[1];
-        k[2] = mK[2] ^ (int) FK[2];
-        k[3] = mK[3] ^ (int) FK[3];
+        k[0] = mK[0] ^ FK[0];
+        k[1] = mK[1] ^ FK[1];
+        k[2] = mK[2] ^ FK[2];
+        k[3] = mK[3] ^ FK[3];
         for (; i < 32; i++) {
             k[(i + 4)] = (k[i] ^ sm4CalciRK(k[(i + 1)] ^ k[(i + 2)] ^ k[(i + 3)] ^ (int) CK[i]));
             SK[i] = k[(i + 4)];
@@ -146,7 +144,7 @@ public class SM4 {
             return null;
         }
 
-        byte[] ret = (byte[]) null;
+        byte[] ret;
         if (mode == SM4_ENCRYPT) {
             int p = 16 - input.length % 16;
             ret = new byte[input.length + p];
@@ -239,7 +237,7 @@ public class SM4 {
         if (ctx.isPadding && ctx.mode == SM4_ENCRYPT) {
             input = padding(input, SM4_ENCRYPT);
         }
-        int i = 0;
+        int i;
         int length = input.length;
         ByteArrayInputStream bins = new ByteArrayInputStream(input);
         ByteArrayOutputStream bous = new ByteArrayOutputStream();
