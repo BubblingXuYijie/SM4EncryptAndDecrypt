@@ -3,9 +3,7 @@
  * base64js.toByteArray(d.input)
  * base64js.fromByteArray(c);
  * 国密SM4加密算法
- * @email 1216113487@qq.com
- * 原作者：中科软wzk
- * 修改：徐一杰
+ * 徐一杰
  * 2021/12/24
  *
  * 调用方法：
