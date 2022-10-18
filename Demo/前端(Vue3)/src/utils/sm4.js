@@ -1,15 +1,23 @@
 /**
- * base64js
- * base64js.toByteArray(d.input)
- * base64js.fromByteArray(c);
  * 国密SM4加密算法
  * 徐一杰
- * 2021/12/24
+ * 2022/10/18
  *
  * 调用方法：
  * import {SM4Util} from '@/utils/sm4';
  * var sm4 = new SM4Util();
- sm4.encryptData_CBC('');
+ * 不使用自定义 secretKey，一般用于前端自行加解密,如果是前端加密后端解密，则需要自定义secretKey，前后端一致才能正确解密
+ * sm4.encryptData_ECB('123456');
+ * sm4.decryptData_ECB('123456');
+ * sm4.encryptData_ECB('123456', 'asdfghjklmnbvcx,');
+ * sm4.decryptData_ECB('123456', 'asdfghjklmnbvcx,');
+ *
+ * CBC 加密模式（更加安全），需要两个密钥
+ * sm4.encryptData_CBC('123456');
+ * sm4.decryptData_CBC('123456');
+ * 同样可以自定义 secretKey 和 iv，需要两个密钥前后端都一致
+ * sm4.encryptData_CBC('123456', 'asdfghjklmnbvcx,', 'mnbvcxzpoiuytre1');
+ * sm4.decryptData_CBC('123456', 'asdfghjklmnbvcx,', 'mnbvcxzpoiuytre1');
  */
 (function (r) {
     if (typeof exports === "object" && typeof module !== "undefined") {
@@ -169,13 +177,6 @@
     }, {}, [])("/")
 });
 
-
-/**
- * 国密SM4加密算法
- * @author wzk
- * @email 1216113487@qq.com
- * @company 中科软
- */
 function SM4_Context() {
     this.mode = 1;
     this.isPadding = true;
@@ -241,8 +242,8 @@ function SM4() {
 
 
     this.sm4Lt = function (ka) {
-        let bb = 0;
-        let c = 0;
+        let bb;
+        let c;
         const a = new Array(4);
         const b = new Array(4);
         this.PUT_ULONG_BE(ka, a, 0);
@@ -260,8 +261,8 @@ function SM4() {
     }
 
     this.sm4CalciRK = function (ka) {
-        let bb = 0;
-        let rk = 0;
+        let bb;
+        let rk;
         const a = new Array(4);
         const b = new Array(4);
         this.PUT_ULONG_BE(ka, a, 0);
@@ -466,13 +467,13 @@ function SM4() {
 
 
 export function SM4Util() {
-    // 和后端key一致
+    // 和后端secretKey一致才能正确解密，可自定义传入，如果不传，则使用下面的默认secretKey
     this.secretKey = "GJwsXX_BzW=gJWJW";
-    // 当时用CBC模式的时候
+    // 当时用CBC模式的时候，除了secretKey，还需要 iv，可自定义传入，如果不传，则使用下面的默认iv
     this.iv = "ZkR_SiNoSOFT=568";
     this.hexString = false;
 
-    // ECB模式加密
+    // ECB模式加密，默认secretKey
     this.encryptData_ECB = function (plainText) {
         try {
             const sm4 = new SM4();
@@ -492,7 +493,27 @@ export function SM4Util() {
             return null;
         }
     }
-    //解密_ECB
+    // ECB模式加密，自定义secretKey
+    this.encryptData_ECB = function (plainText, secretKey) {
+        try {
+            const sm4 = new SM4();
+            const ctx = new SM4_Context();
+            ctx.isPadding = true;
+            ctx.mode = sm4.SM4_ENCRYPT;
+            const keyBytes = this.stringToByte(secretKey);
+            sm4.sm4_setkey_enc(ctx, keyBytes);
+            const encrypted = sm4.sm4_crypt_ecb(ctx, this.stringToByte(plainText));
+            const cipherText = base64js.fromByteArray(encrypted);
+            if (cipherText != null && cipherText.trim().length > 0) {
+                cipherText.replace(/(\s*|\t|\r|\n)/g, "");
+            }
+            return cipherText;
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
+    //解密_ECB，默认secretKey
     this.decryptData_ECB = function (cipherText) {
         try {
             let sm4 = new SM4();
@@ -508,8 +529,24 @@ export function SM4Util() {
             return null;
         }
     }
+    //解密_ECB，自定义secretKey
+    this.decryptData_ECB = function (cipherText, secretKey) {
+        try {
+            let sm4 = new SM4();
+            let ctx = new SM4_Context();
+            ctx.isPadding = true;
+            ctx.mode = sm4.SM4_ENCRYPT;
+            let keyBytes = this.stringToByte(secretKey);
+            sm4.sm4_setkey_dec(ctx, keyBytes);
+            let decrypted = sm4.sm4_crypt_ecb(ctx, base64js.toByteArray(cipherText));
+            return this.byteToString(decrypted);
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
 
-    // CBC模式加密
+    // CBC模式加密，默认 iv 和 secretKey
     this.encryptData_CBC = function (plainText) {
         try {
             const sm4 = new SM4();
@@ -532,7 +569,30 @@ export function SM4Util() {
             return null;
         }
     }
-    //解密_CBC
+    // CBC模式加密，自定义 iv 和 secretKey
+    this.encryptData_CBC = function (plainText, iv, secretKey) {
+        try {
+            const sm4 = new SM4();
+            const ctx = new SM4_Context();
+            ctx.isPadding = true;
+            ctx.mode = sm4.SM4_ENCRYPT;
+
+            const keyBytes = this.stringToByte(secretKey);
+            const ivBytes = this.stringToByte(iv);
+
+            sm4.sm4_setkey_enc(ctx, keyBytes);
+            const encrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, this.stringToByte(plainText));
+            const cipherText = base64js.fromByteArray(encrypted);
+            if (cipherText != null && cipherText.trim().length > 0) {
+                cipherText.replace(/(\s*|\t|\r|\n)/g, "");
+            }
+            return cipherText;
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
+    //解密_CBC，默认 iv 和 secretKey
     this.decryptData_CBC = function (cipherText) {
         try {
             let sm4 = new SM4();
@@ -541,6 +601,23 @@ export function SM4Util() {
             ctx.mode = sm4.SM4_ENCRYPT;
             let keyBytes = this.stringToByte(this.secretKey);
             let ivBytes = this.stringToByte(this.iv);
+            sm4.sm4_setkey_dec(ctx, keyBytes);
+            let decrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, base64js.toByteArray(cipherText));
+            return this.byteToString(decrypted);
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
+    //解密_CBC，自定义 iv 和 secretKey
+    this.decryptData_CBC = function (cipherText, iv, secretKey) {
+        try {
+            let sm4 = new SM4();
+            let ctx = new SM4_Context();
+            ctx.isPadding = true;
+            ctx.mode = sm4.SM4_ENCRYPT;
+            let keyBytes = this.stringToByte(secretKey);
+            let ivBytes = this.stringToByte(iv);
             sm4.sm4_setkey_dec(ctx, keyBytes);
             let decrypted = sm4.sm4_crypt_cbc(ctx, ivBytes, base64js.toByteArray(cipherText));
             return this.byteToString(decrypted);
