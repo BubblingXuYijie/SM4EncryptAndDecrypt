@@ -28,8 +28,8 @@ export default {
   methods:{
     encrypt(){
       const sm4 = new SM4Util();
-      this.encryptedPassword = sm4.encryptData_CBC(this.password)
-      this.decryptedPassword = sm4.decryptData_CBC(this.encryptedPassword)
+      this.encryptedPassword = sm4.encryptDefault_CBC(this.password)
+      this.decryptedPassword = sm4.decryptDefault_CBC(this.encryptedPassword)
     }
   }
 }
