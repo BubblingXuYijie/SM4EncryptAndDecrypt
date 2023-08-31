@@ -7,17 +7,17 @@
  * import {SM4Util} from '@/utils/sm4';
  * var sm4 = new SM4Util();
  * 不使用自定义 secretKey，一般用于前端自行加解密,如果是前端加密后端解密，则需要自定义secretKey，前后端一致才能正确解密
- * sm4.encryptData_ECB('123456');
- * sm4.decryptData_ECB('123456');
- * sm4.encryptData_ECB('123456', 'asdfghjklmnbvcx,');
- * sm4.decryptData_ECB('123456', 'asdfghjklmnbvcx,');
+ * sm4.encryptDefault_ECB('123456');
+ * sm4.decryptDefault_ECB('123456');
+ * sm4.encryptCustom_ECB('123456', 'asdfghjklmnbvcx,');
+ * sm4.decryptCustom_ECB('123456', 'asdfghjklmnbvcx,');
  *
  * CBC 加密模式（更加安全），需要两个密钥
- * sm4.encryptData_CBC('123456');
- * sm4.decryptData_CBC('123456');
+ * sm4.encryptDefault_CBC('123456');
+ * sm4.decryptDefault_CBC('123456');
  * 同样可以自定义 secretKey 和 iv，需要两个密钥前后端都一致
- * sm4.encryptData_CBC('123456', 'asdfghjklmnbvcx,', 'mnbvcxzpoiuytre1');
- * sm4.decryptData_CBC('123456', 'asdfghjklmnbvcx,', 'mnbvcxzpoiuytre1');
+ * sm4.encryptCustom_CBC('123456', 'asdfghjklmnbvcx,', 'mnbvcxzpoiuytre1');
+ * sm4.decryptCustom_CBC('123456', 'asdfghjklmnbvcx,', 'mnbvcxzpoiuytre1');
  */
 (function (r) {
     if (typeof exports === "object" && typeof module !== "undefined") {
@@ -466,7 +466,7 @@ function SM4() {
 }
 
 
-export function SM4Util() {
+const SM4Util = function () {
     // 和后端secretKey一致才能正确解密，可自定义传入，如果不传，则使用下面的默认secretKey
     this.secretKey = "GJwsXX_BzW=gJWJW";
     // 当时用CBC模式的时候，除了secretKey，还需要 iv，可自定义传入，如果不传，则使用下面的默认iv
@@ -474,7 +474,7 @@ export function SM4Util() {
     this.hexString = false;
 
     // ECB模式加密，默认secretKey
-    this.encryptData_ECB = function (plainText) {
+    this.encryptDefault_ECB = function (plainText) {
         try {
             const sm4 = new SM4();
             const ctx = new SM4_Context();
@@ -494,7 +494,7 @@ export function SM4Util() {
         }
     }
     // ECB模式加密，自定义secretKey
-    this.encryptData_ECB = function (plainText, secretKey) {
+    this.encryptCustom_ECB = function (plainText, secretKey) {
         try {
             const sm4 = new SM4();
             const ctx = new SM4_Context();
@@ -514,7 +514,7 @@ export function SM4Util() {
         }
     }
     //解密_ECB，默认secretKey
-    this.decryptData_ECB = function (cipherText) {
+    this.decryptDefault_ECB = function (cipherText) {
         try {
             let sm4 = new SM4();
             let ctx = new SM4_Context();
@@ -530,7 +530,7 @@ export function SM4Util() {
         }
     }
     //解密_ECB，自定义secretKey
-    this.decryptData_ECB = function (cipherText, secretKey) {
+    this.decryptCustom_ECB = function (cipherText, secretKey) {
         try {
             let sm4 = new SM4();
             let ctx = new SM4_Context();
@@ -547,7 +547,7 @@ export function SM4Util() {
     }
 
     // CBC模式加密，默认 iv 和 secretKey
-    this.encryptData_CBC = function (plainText) {
+    this.encryptDefault_CBC = function (plainText) {
         try {
             const sm4 = new SM4();
             const ctx = new SM4_Context();
@@ -570,7 +570,7 @@ export function SM4Util() {
         }
     }
     // CBC模式加密，自定义 iv 和 secretKey
-    this.encryptData_CBC = function (plainText, iv, secretKey) {
+    this.encryptCustom_CBC = function (plainText, iv, secretKey) {
         try {
             const sm4 = new SM4();
             const ctx = new SM4_Context();
@@ -593,7 +593,7 @@ export function SM4Util() {
         }
     }
     //解密_CBC，默认 iv 和 secretKey
-    this.decryptData_CBC = function (cipherText) {
+    this.decryptDefault_CBC = function (cipherText) {
         try {
             let sm4 = new SM4();
             let ctx = new SM4_Context();
@@ -610,7 +610,7 @@ export function SM4Util() {
         }
     }
     //解密_CBC，自定义 iv 和 secretKey
-    this.decryptData_CBC = function (cipherText, iv, secretKey) {
+    this.decryptCustom_CBC = function (cipherText, iv, secretKey) {
         try {
             let sm4 = new SM4();
             let ctx = new SM4_Context();
@@ -676,4 +676,6 @@ export function SM4Util() {
         }
         return str;
     }
-}
+};
+
+export {SM4Util};
