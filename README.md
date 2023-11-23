@@ -11,7 +11,6 @@ demo文件夹里面有前后端的示例代码
 > 这里的项目是源码，如果要在vue或者springboot项目中使用，可以采用更方便的方法，前后端的 SM4 加解密我已经上传到 npm 和 maven 中央仓库了，你们可以 npm install sm4util 和 引入到 pom 使用
 
 ```xml
-<!--引入-->
 <dependency>
     <groupId>icu.xuyijie</groupId>
     <artifactId>SM4Utils</artifactId>
@@ -20,7 +19,6 @@ demo文件夹里面有前后端的示例代码
 ```
 
 ```bash
-// 安装
 npm install sm4util
 ```
 
